@@ -5,7 +5,7 @@
 This project benchmarks three advanced numerical methods for computing Option Greeks (sensitivities), with a specific focus on the **Gamma ($\Gamma$)** of Digital and Vanilla options. It investigates the trade-offs between **Finite Differences (FD)**, **Pathwise Derivatives (AAD)** via PyTorch, and the **Likelihood Ratio Method (Malliavin Calculus)**.
 
 Key results:
-- Scalability: AAD and Malliavin offer superior scalability for large portfolios (O(1) complexity), achieving a 3.5x speedup compared to Finite Differences (O(N) complexity).
+- Scalability: AAD and Malliavin offer superior scalability for large portfolios (O(1) complexity), achieving a 7x speedup compared to Finite Differences (O(N) complexity).
 - Bias-Variance Trade-off: While Malliavin is the only statistically unbiased estimator (< 0.1 bp error), it suffers from higher variance than AAD.
 - Operational Risk: Finite Differences hit a "Bias Floor" and require careful tuning of the bump size, making them operationally fragile for second-order Greeks.
 
@@ -17,12 +17,12 @@ The project considers the **Black-Scholes framework** under the risk-neutral mea
 $$ \frac{dS_t}{S_t} = r dt + \sigma dW_t $$
 
 Our objective is to compute the second-order sensitivity (Gamma) of the option price:
-$$ \Gamma = \frac{\partial^2 V}{\partial S_0^2} = \frac{\partial^2}{\partial S_0^2} \mathbb{E}^{\mathbb{Q}}[e^{-rT} \Phi(S_T)] $$
+$$\Gamma = \frac{\partial^2 V}{\partial S_0^2} = \frac{\partial^2}{\partial S_0^2} \mathbb{E}^{\mathbb{Q}}[e^{-rT} \Phi(S_T)]$$
 
 ### Methods Evaluated
 
 1.  **Finite Differences (FD):**
-    *   *Method:* Approximates derivatives with Taylor expansion ($ \Gamma = \frac{V(S+\epsilon) - 2V(S) + V(S-\epsilon)}{\epsilon^2} $).
+    *   *Method:* Approximates derivatives with Taylor expansion ($\Gamma = \frac{V(S+\epsilon) - 2V(S) + V(S-\epsilon)}{\epsilon^2}$).
     *   *Challenge:* Highly sensitive to the step size $\epsilon$ because of this $\frac{1}{\epsilon^2}$ term (Bias-Variance trade-off).
 
 2.  **Pathwise Derivatives (AAD):**
@@ -42,7 +42,7 @@ The Finite Difference method exhibits a characteristic "U-shape" error profile. 
 2. Computational Efficiency
 ![Computational Speed](notebooks/images/batch_speed_test.png)
 
-For large portfolios (Batch Size > 5000), **AAD and Malliavin are ~3.5x faster** than Finite Differences.
+For large portfolios (Batch Size > 5000), **AAD and Malliavin are ~7x faster** than Finite Differences.
 
 3. Accuracy & Bias
 ![convergence_mc](notebooks/images/convergence_mc.png)
