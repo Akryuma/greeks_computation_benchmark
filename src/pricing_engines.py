@@ -7,12 +7,12 @@ def generate_normal_vect(batch_size, seed = 0, dtype = torch.float64):
     Parameters
     ----------
     batch_size : int
-        Number of normal random variables to generate.
+        Number of independent antithetic pairs (returns 2 * batch_size samples).
     seed : int
         Seed for the random number generator.
     """
-    torch.manual_seed(seed)
-    normal_vect = torch.randn(batch_size, dtype = dtype)
+    generator = torch.Generator().manual_seed(seed)
+    normal_vect = torch.randn(batch_size, dtype=dtype, generator=generator)
     
     # antithetic variates
     return torch.concat([normal_vect, -normal_vect], dim = 0)
@@ -36,7 +36,7 @@ def vanilla_call_mc_fd(normal_vect, spot, strike, sigma_bs, rate, ttm,
     ttm : float
         Time to maturity.
     epsilon : float
-        Step size for finite differences.
+        Relative bump: spot step is epsilon * spot, volatility step is epsilon * sigma_bs.
     """
     if isinstance(spot, torch.Tensor):
         spot = spot.detach().numpy()
@@ -119,7 +119,7 @@ def vanilla_call_mc_aad(normal_vect, spot, strike, sigma_bs, rate, ttm):
 def vanilla_call_mc_aad_smooth(normal_vect, spot, strike, sigma_bs, rate, ttm, beta = 50):
     """Computes the price, delta, vega and gamma of a European call option using Monte Carlo with automatic differentiation and smooth payoff.
     The payoff is smoothed using the softplus function:
-        softplus(x) = log(1 + exp(x))
+        softplus(x) = log(1 + exp(beta * x)) / beta
     
     Parameters
     ----------
