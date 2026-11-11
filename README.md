@@ -59,7 +59,7 @@ $\varepsilon$.
 
 ### Stress testing
 **Regime Sensitivity:**
-*Short Maturities ($T < 0.1$):* Malliavin estimators become unstable. Finite Difference requires re-calibration of
+*Short Maturities* ($T < 0.1$): Malliavin estimators become unstable. Finite Difference requires re-calibration of
 $\varepsilon$.
 
 ## Conclusion
